@@ -32,7 +32,7 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 	private int currentPlayerIndex;
 	
 	private Timer computerPlayerDelay;
-	private int COMPUTER_THINKING_DELAY_MILLISECONDS = 1000;
+	private int COMPUTER_THINKING_DELAY_MILLISECONDS = 750;
 
 	public TicTacToeWindow() {
 		super("Tic Tac Toe");
@@ -118,7 +118,7 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 		if(e.getSource() == computerPlayerDelay) {
 			makeComputerPlayerMove();
 			
-		} else if(e.getActionCommand() != null && e.getActionCommand().equals("Cell")) {
+		} else if(e.getActionCommand() != null && e.getActionCommand().equals("Cell") && !isCurrentPlayerComputer()) {
 			CellDisplay cell = (CellDisplay)e.getSource();
 			makeMark(cell.getCoordinate());
 		}
@@ -126,12 +126,12 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 	
 	private void makeMark(Coordinate coordinate) {
 		if(board.makeMark(coordinate, getCurrentPlayer().getMark())) {
-			Player newPlayer = moveToNextPlayer();
+			moveToNextPlayer();
 			
 			setDescription();
 			boardDisplay.updateCellDisplays();
 			
-			if(board.getGameState() == GameState.IN_PROGRESS && newPlayer.getLogic() != null) {
+			if(board.getGameState() == GameState.IN_PROGRESS && isCurrentPlayerComputer()) {
 				queueComputerPlayerMove();
 			}
 		}
@@ -154,7 +154,7 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 			case IN_PROGRESS:
 				description = players.get(currentPlayerIndex).getName();
 				
-				if(getCurrentPlayer().getLogic() != null) {
+				if(isCurrentPlayerComputer()) {
 					description += " is thinking...";
 				} else {
 					description += ", please make a move.";	
@@ -170,13 +170,11 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 		return players.get(currentPlayerIndex);
 	}
 	
-	private Player moveToNextPlayer() {
+	private void moveToNextPlayer() {
 		currentPlayerIndex++;
 		if(currentPlayerIndex > players.size() - 1) {
 			currentPlayerIndex = 0;
 		}
-		
-		return getCurrentPlayer();
 	}
 	
 	private void queueComputerPlayerMove() {
@@ -188,5 +186,9 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 		Coordinate move = ai.getMove(board);
 		
 		makeMark(move);
+	}
+	
+	private boolean isCurrentPlayerComputer() {
+		return getCurrentPlayer().getLogic() != null;
 	}
 }
