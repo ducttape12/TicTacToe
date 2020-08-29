@@ -1,9 +1,12 @@
-package tictactoe;
+package tictactoe.ui;
 
 import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.JButton;
+
+import tictactoe.Cell;
+import tictactoe.Coordinate;
 
 public class CellDisplay extends JButton {
 

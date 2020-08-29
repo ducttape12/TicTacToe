@@ -1,4 +1,4 @@
-package tictactoe;
+package tictactoe.ui;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -6,6 +6,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+
+import tictactoe.Board;
+import tictactoe.Cell;
+import tictactoe.Coordinate;
 
 public class BoardDisplay extends JPanel implements ActionListener {
 

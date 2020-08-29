@@ -1,4 +1,4 @@
-package tictactoe;
+package tictactoe.ui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -8,6 +8,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+
+import tictactoe.Board;
+import tictactoe.Coordinate;
+import tictactoe.GameState;
+import tictactoe.Mark;
 
 public class TicTacToeWindow extends JFrame implements ActionListener {
 
