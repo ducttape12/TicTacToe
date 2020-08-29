@@ -20,7 +20,7 @@ public class BoardDisplay extends JPanel implements ActionListener {
 		for(int y = 0; y < Board.ROWS_COLUMNS; y++) {
 			for(int x = 0; x < Board.ROWS_COLUMNS; x++) {
 				Cell cell = board.getCells()[x][y];
-				CellDisplay cellDisplay = new CellDisplay(x, y, cell);
+				CellDisplay cellDisplay = new CellDisplay(new Coordinate(x, y), cell);
 				
 				add(cellDisplay);
 				displayCells.add(cellDisplay);

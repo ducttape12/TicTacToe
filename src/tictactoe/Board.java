@@ -21,7 +21,10 @@ public class Board {
 		return cells;
 	}
 	
-	public boolean canMakeMark(int x, int y) {
+	public boolean canMakeMark(Coordinate coordinate) {
+		int x = coordinate.getX();
+		int y = coordinate.getY();
+		
 		boolean outOfBoundsX = x < 0 || x > cells.length - 1;
 		if(outOfBoundsX) {
 			return false;
@@ -40,12 +43,12 @@ public class Board {
 		return true;
 	}
 	
-	public boolean makeMark(int x, int y, Mark mark) {
-		if(!canMakeMark(x, y) || mark == Mark.NONE || getGameState() != GameState.IN_PROGRESS) {
+	public boolean makeMark(Coordinate coordinate, Mark mark) {
+		if(!canMakeMark(coordinate) || mark == Mark.NONE || getGameState() != GameState.IN_PROGRESS) {
 			return false;
 		}
 		
-		cells[x][y].setMark(mark);
+		cells[coordinate.getX()][coordinate.getY()].setMark(mark);
 		return true;
 	}
 	

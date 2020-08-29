@@ -57,13 +57,13 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("Cell")) {
 			CellDisplay cell = (CellDisplay)e.getSource();
-			makeMark(cell.getXCoordinate(), cell.getYCoordinate());
+			makeMark(cell.getCoordinate());
 		}
 		
 	}
 	
-	private void makeMark(int x, int y) {
-		if(board.makeMark(x, y, currentPlayer)) {
+	private void makeMark(Coordinate coordinate) {
+		if(board.makeMark(coordinate, currentPlayer)) {
 			currentPlayer = currentPlayer == Mark.PLAYER_1 ? Mark.PLAYER_2 : Mark.PLAYER_1;
 			
 			setDescription();
