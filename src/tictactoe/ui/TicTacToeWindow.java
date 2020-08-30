@@ -20,6 +20,7 @@ import tictactoe.GameState;
 import tictactoe.Mark;
 import tictactoe.ai.ComputerPlayer;
 import tictactoe.ai.EasyComputerPlayer;
+import tictactoe.ai.HardComputerPlayer;
 
 public class TicTacToeWindow extends JFrame implements ActionListener {
 
@@ -64,20 +65,22 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 	
 	private void initializePlayers() {
 		
-		Object[] playerOptions = { "Human", "Computer" };
+		Object[] playerOptions = { "Human", "Easy Computer", "Hard Computer" };
 		
 		int result = 0;
 		do {
 			result = JOptionPane.showOptionDialog(null,
 					"Who would you like to play against?",
 					"Tic Tac Toe",
-					JOptionPane.YES_NO_OPTION,
+					JOptionPane.YES_NO_CANCEL_OPTION,
 					JOptionPane.PLAIN_MESSAGE,
 					null,
 					playerOptions,
 					null);
 
-		} while(result != JOptionPane.YES_OPTION && result != JOptionPane.NO_OPTION);
+		} while(result != JOptionPane.YES_OPTION &&
+				result != JOptionPane.NO_OPTION &&
+				result != JOptionPane.CANCEL_OPTION);
 
 		Player player1 = new Player("Player 1", Mark.PLAYER_1);
 		Player player2;
@@ -86,9 +89,11 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 		if(result == JOptionPane.YES_OPTION) {
 			player2 = new Player("Player 2", Mark.PLAYER_2);
 			
-		// Computer
+		// Easy Computer
+		} else if (result == JOptionPane.NO_OPTION) {
+			player2 = new Player("Easy Computer", Mark.PLAYER_2, new EasyComputerPlayer());
 		} else {
-			player2 = new Player("Computer", Mark.PLAYER_2, new EasyComputerPlayer());
+			player2 = new Player("Hard Computer", Mark.PLAYER_2, new HardComputerPlayer());
 		}
 		
 		players = new ArrayList<Player>();
@@ -182,8 +187,11 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 	}
 	
 	private void makeComputerPlayerMove() {
-		ComputerPlayer ai = getCurrentPlayer().getLogic();
-		Coordinate move = ai.getMove(board);
+		Player player = getCurrentPlayer();
+		ComputerPlayer ai = player.getLogic();
+		Mark mark = player.getMark();
+		
+		Coordinate move = ai.getMove(board, mark);
 		
 		makeMark(move);
 	}

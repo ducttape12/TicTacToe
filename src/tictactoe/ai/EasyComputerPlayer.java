@@ -7,6 +7,7 @@ import java.util.Random;
 import tictactoe.Board;
 import tictactoe.Cell;
 import tictactoe.Coordinate;
+import tictactoe.Mark;
 
 /**
  * An easy computer player.  It randomly makes a move.
@@ -18,7 +19,7 @@ public class EasyComputerPlayer implements ComputerPlayer {
 	 * Randomly pick an open cell for a move
 	 */
 	@Override
-	public Coordinate getMove(Board board) {
+	public Coordinate getMove(Board board, Mark ownMark) {
 		List<Coordinate> possibleMoves = openCells(board);
 		
 		if(possibleMoves.size() == 0) {

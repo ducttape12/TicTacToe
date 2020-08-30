@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import tictactoe.Board;
 import tictactoe.Coordinate;
+import tictactoe.Mark;
 import tictactoe.ai.ComputerPlayer;
 import tictactoe.ai.EasyComputerPlayer;
 
@@ -21,7 +22,7 @@ public class EasyComputerPlayerTests {
 		ComputerPlayer cpu = new EasyComputerPlayer();
 		
 		// Act
-		Coordinate move = cpu.getMove(board);
+		Coordinate move = cpu.getMove(board, Mark.PLAYER_1);
 		
 		// Assert
 		assertEquals(0, move.getX());
@@ -39,7 +40,7 @@ public class EasyComputerPlayerTests {
 		ComputerPlayer cpu = new EasyComputerPlayer();
 		
 		// Act
-		Coordinate move = cpu.getMove(board);
+		Coordinate move = cpu.getMove(board, Mark.PLAYER_1);
 		
 		// Assert
 		assertNull(move);
