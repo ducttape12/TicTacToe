@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -61,6 +62,10 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 		setVisible(true);
 		
 		setDescription();
+		
+		if(isCurrentPlayerComputer()) {
+			queueComputerPlayerMove();
+		}
 	}
 	
 	private void initializePlayers() {
@@ -101,8 +106,7 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 		players.add(player1);
 		players.add(player2);
 		
-		// TODO: This breaks the name display if Player 2 goes first
-		//Collections.shuffle(players);
+		Collections.shuffle(players);
 		
 		currentPlayerIndex = 0;
 	}
@@ -148,10 +152,10 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 		String description = "";
 		switch(state) {
 			case GAME_OVER_PLAYER_1_WINS:
-				description = players.get(0).getName() + " wins!";
+				description = getPlayerNameFromMark(Mark.PLAYER_1) + " wins!";
 				break;
 			case GAME_OVER_PLAYER_2_WINS:
-				description = players.get(1).getName() + " wins!";
+				description = getPlayerNameFromMark(Mark.PLAYER_2) + " wins!";
 				break;
 			case GAME_OVER_TIE:
 				description = "Both players tied.  Game over.";
@@ -169,6 +173,17 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 		}
 		
 		statusMessage.setText(description);
+	}
+	
+	private String getPlayerNameFromMark(Mark mark) {
+		for(int i = 0; i < players.size(); i++) {
+			Player player = players.get(i);
+			if(player.getMark() == mark) {
+				return player.getName();
+			}
+		}
+		
+		return null;
 	}
 	
 	private Player getCurrentPlayer() {
