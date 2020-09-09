@@ -1,6 +1,11 @@
 package tictactoe;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+
+import tictactoe.shared.DirectionGenerator;
 
 public class Board {
 	private Cell[][] cells;
@@ -44,7 +49,7 @@ public class Board {
 	}
 	
 	public boolean makeMark(Coordinate coordinate, Mark mark) {
-		if(!canMakeMark(coordinate) || mark == Mark.NONE || getGameState() != GameState.IN_PROGRESS) {
+		if(!canMakeMark(coordinate) || mark == Mark.NONE || getGameStatePayload().getGameState() != GameState.IN_PROGRESS) {
 			return false;
 		}
 		
@@ -52,137 +57,38 @@ public class Board {
 		return true;
 	}
 	
-	public GameState getGameState() {
-		HashSet<GameState> states = new HashSet<GameState>();
-		states.add(getColumnGameState());
-		states.add(getRowGameState());
-		states.add(getLeftRightDiagonalGameState());
-		states.add(getRightLeftDiagonalGameState());
+	public GameStatePayload getGameStatePayload() {
+		List<List<Coordinate>> allDirections = DirectionGenerator.getAllDirections();
 		
-		if(states.contains(GameState.GAME_OVER_PLAYER_1_WINS)) {
-			return GameState.GAME_OVER_PLAYER_1_WINS;
-		}
-		if(states.contains(GameState.GAME_OVER_PLAYER_2_WINS)) {
-			return GameState.GAME_OVER_PLAYER_2_WINS;
-		}
-		if(states.contains(GameState.IN_PROGRESS)) {
-			return GameState.IN_PROGRESS;
-		}
-		return GameState.GAME_OVER_TIE;
-	}
-	
-	private GameState getColumnGameState() {
 		boolean inProgress = false;
 		
-		for(int x = 0; x < cells.length; x++) {
-			HashSet<Mark> marksInCurrentColumn = new HashSet<Mark>();
+		for(int allDirectionsIndex = 0; allDirectionsIndex < allDirections.size(); allDirectionsIndex++) {
+			List<Coordinate> direction = allDirections.get(allDirectionsIndex);
+			HashSet<Mark> marksInDirection = new HashSet<Mark>();
 			
-			for(int y = 0; y < cells[x].length; y++) {
-				Mark mark = cells[x][y].getMark();
+			for(int directionIndex = 0; directionIndex < direction.size(); directionIndex++) {
+				Coordinate coordinate = direction.get(directionIndex);
+				Mark markAtCoordinate = cells[coordinate.getX()][coordinate.getY()].getMark();
 				
-				marksInCurrentColumn.add(mark);
+				marksInDirection.add(markAtCoordinate);	
+				
+				if(markAtCoordinate == Mark.NONE) {
+					inProgress = true;
+				}
 			}
 			
-			if(marksInCurrentColumn.size() == 1 && marksInCurrentColumn.contains(Mark.PLAYER_1)) {
-				return GameState.GAME_OVER_PLAYER_1_WINS;
-			}
+			boolean directionFilledWithSameMark = marksInDirection.size() == 1 && !marksInDirection.contains(Mark.NONE);
 			
-			if(marksInCurrentColumn.size() == 1 && marksInCurrentColumn.contains(Mark.PLAYER_2)) {
-				return GameState.GAME_OVER_PLAYER_2_WINS;
-			}
-			
-			if(marksInCurrentColumn.contains(Mark.NONE)) {
-				inProgress = true;
-			}
-		}
-		
-		if(inProgress) {
-			return GameState.IN_PROGRESS;
-		}
-		
-		return GameState.GAME_OVER_TIE;
-	}
-	
-	private GameState getRowGameState() {
-		boolean inProgress = false;
-		
-		for(int y = 0; y < ROWS_COLUMNS; y++) {
-			HashSet<Mark> marksInCurrentRow = new HashSet<Mark>();
-			
-			for(int x = 0; x < cells.length; x++) {
-				Mark mark = cells[x][y].getMark();
-
-				marksInCurrentRow.add(mark);
-			}
-			
-			if(marksInCurrentRow.size() == 1 && marksInCurrentRow.contains(Mark.PLAYER_1)) {
-				return GameState.GAME_OVER_PLAYER_1_WINS;
-			}
-			
-			if(marksInCurrentRow.size() == 1 && marksInCurrentRow.contains(Mark.PLAYER_2)) {
-				return GameState.GAME_OVER_PLAYER_2_WINS;
-			}
-			
-			if(marksInCurrentRow.contains(Mark.NONE)) {
-				inProgress = true;
+			if(directionFilledWithSameMark) {
+				Mark[] marks = marksInDirection.toArray(new Mark[marksInDirection.size()]);
+				return new GameStatePayload(GameState.GAME_OVER_WINNER, marks[0]);
 			}
 		}
 		
 		if(inProgress) {
-			return GameState.IN_PROGRESS;
+			return new GameStatePayload(GameState.IN_PROGRESS, null);
 		}
 		
-		return GameState.GAME_OVER_TIE;
-	}
-	
-	private GameState getLeftRightDiagonalGameState() {
-		HashSet<Mark> marksInDiagonal = new HashSet<Mark>();
-		
-		for(int i = 0; i < ROWS_COLUMNS; i++) {
-			Mark mark = cells[i][i].getMark();
-
-			marksInDiagonal.add(mark);
-		}
-		
-		if(marksInDiagonal.size() == 1 && marksInDiagonal.contains(Mark.PLAYER_1)) {
-			return GameState.GAME_OVER_PLAYER_1_WINS;
-		}
-		
-		if(marksInDiagonal.size() == 1 && marksInDiagonal.contains(Mark.PLAYER_2)) {
-			return GameState.GAME_OVER_PLAYER_2_WINS;
-		}
-		
-		if(marksInDiagonal.contains(Mark.NONE)) {
-			return GameState.IN_PROGRESS;
-		}
-		
-		return GameState.GAME_OVER_TIE;
-	}
-	
-	private GameState getRightLeftDiagonalGameState() {
-		HashSet<Mark> marksInDiagonal = new HashSet<Mark>();
-		int y = 0;
-		
-		for(int x = ROWS_COLUMNS - 1; x >= 0; x--) {
-			Mark mark = cells[x][y].getMark();
-
-			marksInDiagonal.add(mark);
-			
-			y++;
-		}
-		
-		if(marksInDiagonal.size() == 1 && marksInDiagonal.contains(Mark.PLAYER_1)) {
-			return GameState.GAME_OVER_PLAYER_1_WINS;
-		}
-		
-		if(marksInDiagonal.size() == 1 && marksInDiagonal.contains(Mark.PLAYER_2)) {
-			return GameState.GAME_OVER_PLAYER_2_WINS;
-		}
-		
-		if(marksInDiagonal.contains(Mark.NONE)) {
-			return GameState.IN_PROGRESS;
-		}
-		
-		return GameState.GAME_OVER_TIE;
+		return new GameStatePayload(GameState.GAME_OVER_TIE, null);
 	}
 }

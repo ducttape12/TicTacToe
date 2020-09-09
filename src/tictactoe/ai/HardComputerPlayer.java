@@ -8,6 +8,7 @@ import tictactoe.Board;
 import tictactoe.Cell;
 import tictactoe.Coordinate;
 import tictactoe.Mark;
+import tictactoe.shared.DirectionGenerator;
 
 /**
  * Hard difficulty computer player.  Moves fall in the following order:
@@ -19,71 +20,7 @@ import tictactoe.Mark;
  *    marks, make a move in that row, column, or diagonal.
  * 5. Just make a random move from the available choices.
  */
-public class HardComputerPlayer implements ComputerPlayer {
-	
-	private List<List<Coordinate>> allDirections;
-	
-	public HardComputerPlayer() {
-		allDirections = getListOfAllDirections();
-	}
-	
-	private List<List<Coordinate>> getListOfAllDirections() {
-		ArrayList<List<Coordinate>> directions = new ArrayList<List<Coordinate>>();
-		
-		addRowsToDirections(directions);
-		addColumnsToDirections(directions);
-		addLeftRightDiagonalDirection(directions);
-		addRightLeftDiagonalDirection(directions);
-				
-		return directions;
-	}
-	
-	private void addRowsToDirections(List<List<Coordinate>> directions) {
-		for(int y = 0; y < Board.ROWS_COLUMNS; y++) {
-			ArrayList<Coordinate> row = new ArrayList<Coordinate>();
-			
-			for(int x = 0; x < Board.ROWS_COLUMNS; x++) {
-				row.add(new Coordinate(x, y));
-			}
-			
-			directions.add(row);
-		}
-	}
-	
-	private void addColumnsToDirections(List<List<Coordinate>> directions) {
-		for(int x = 0; x < Board.ROWS_COLUMNS; x++) {
-			ArrayList<Coordinate> column = new ArrayList<Coordinate>();
-			
-			for(int y = 0; y < Board.ROWS_COLUMNS; y++) {
-				column.add(new Coordinate(x, y));
-			}
-			
-			directions.add(column);
-		}
-	}
-	
-	private void addLeftRightDiagonalDirection(List<List<Coordinate>> directions) {
-		ArrayList<Coordinate> diagonal = new ArrayList<Coordinate>();
-		
-		for(int i = 0; i < Board.ROWS_COLUMNS; i++) {
-			diagonal.add(new Coordinate(i, i));
-		}
-		
-		directions.add(diagonal);
-	}
-	
-	private void addRightLeftDiagonalDirection(List<List<Coordinate>> directions) {
-		ArrayList<Coordinate> diagonal = new ArrayList<Coordinate>();
-		int y = 0;
-		
-		for(int x = Board.ROWS_COLUMNS - 1; x >= 0; x--) {
-			diagonal.add(new Coordinate(x, y));
-			
-			y++;
-		}
-		
-		directions.add(diagonal);
-	}
+public class HardComputerPlayer implements ComputerPlayer {	
 	
 	@Override
 	public Coordinate getMove(Board board, Mark ownMark) {
@@ -105,8 +42,8 @@ public class HardComputerPlayer implements ComputerPlayer {
 		List<Coordinate> possibleMoveList = new ArrayList<Coordinate>(Board.ROWS_COLUMNS & Board.ROWS_COLUMNS);
 		boolean blankBoard = true;
 		
-		for(int allDirectionsIndex = 0; allDirectionsIndex < allDirections.size(); allDirectionsIndex++) {
-			List<Coordinate> direction = allDirections.get(allDirectionsIndex);
+		for(int allDirectionsIndex = 0; allDirectionsIndex < DirectionGenerator.getAllDirections().size(); allDirectionsIndex++) {
+			List<Coordinate> direction = DirectionGenerator.getAllDirections().get(allDirectionsIndex);
 			
 			List<Coordinate> myCoordinates = new ArrayList<Coordinate>(Board.ROWS_COLUMNS);
 			List<Coordinate> opponentCoordinates = new ArrayList<Coordinate>(Board.ROWS_COLUMNS);

@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 import tictactoe.Board;
 import tictactoe.Coordinate;
 import tictactoe.GameState;
+import tictactoe.GameStatePayload;
 import tictactoe.Mark;
 import tictactoe.ai.ComputerPlayer;
 import tictactoe.ai.EasyComputerPlayer;
@@ -140,22 +141,21 @@ public class TicTacToeWindow extends JFrame implements ActionListener {
 			setDescription();
 			boardDisplay.updateCellDisplays();
 			
-			if(board.getGameState() == GameState.IN_PROGRESS && isCurrentPlayerComputer()) {
+			GameStatePayload gameStatePayload = board.getGameStatePayload();
+			
+			if(gameStatePayload.getGameState() == GameState.IN_PROGRESS && isCurrentPlayerComputer()) {
 				queueComputerPlayerMove();
 			}
 		}
 	}
 	
 	private void setDescription() {
-		GameState state = board.getGameState();
+		GameStatePayload gameStatePayload = board.getGameStatePayload();
 		
 		String description = "";
-		switch(state) {
-			case GAME_OVER_PLAYER_1_WINS:
-				description = getPlayerNameFromMark(Mark.PLAYER_1) + " wins!";
-				break;
-			case GAME_OVER_PLAYER_2_WINS:
-				description = getPlayerNameFromMark(Mark.PLAYER_2) + " wins!";
+		switch(gameStatePayload.getGameState()) {
+			case GAME_OVER_WINNER:
+				description = getPlayerNameFromMark(gameStatePayload.getWinner()) + " wins!";
 				break;
 			case GAME_OVER_TIE:
 				description = "Both players tied.  Game over.";
